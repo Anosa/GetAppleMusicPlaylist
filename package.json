@@ -1,0 +1,25 @@
+{
+  "name": "get-apple-music-playlist",
+  "version": "1.0.0",
+  "description": "fetch apple music playlit",
+  "main": "dist/index.ts",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Anosa/GetAppleMusicPlaylist"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup index.ts --format esm,cjs --dts"
+  },
+  "author": "Aunzey",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^7.2.0"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "typescript": "^5.1.6"
+  }
+}
