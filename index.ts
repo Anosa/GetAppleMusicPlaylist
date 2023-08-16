@@ -6,6 +6,9 @@ const headers = {
     "Origin": "https://embed.music.apple.com"
 };
 
+const key="eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjkxMDAyMzM2LCJleHAiOjE2OTcyMjMxMzYsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.M6q_lHkvEKFi8rvnC2DtbuJ1RLTwKRYoOhsX2Vieqw184H0wKh0Tr4SWHa6WBpsxpnA5fnesVj88nJtzZ5WP8Q"
+
+
 async function run(link:string, authorization:string) {
   url=url.replace("{link}",link)
   try {
@@ -52,7 +55,8 @@ function getImage(url:string,w:any,h:any): string{
   return url.replace("{w}", w).replace("{h}", h);
 }
 
-async function getPlayList(url:string,authorization:string) {
+
+async function getPlayList(url:string,authorization=key) {
   url=url.split("pl.u-")[1];
   url.includes("?l=")? url= url.split("?l=")[0] : null
   const result = await run(url,authorization); 
