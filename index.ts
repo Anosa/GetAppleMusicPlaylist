@@ -1,5 +1,7 @@
 import axios from "axios";
+import {writeFileSync,readFileSync,existsSync} from 'fs';
 let url = 'https://amp-api.music.apple.com/v1/catalog/us/playlists/pl.{link}';
+let retry=true;
 
 const headers = {
     'Authorization': "Bearer ",
@@ -10,8 +12,6 @@ const headers = {
 async function run(link:string) {
   url=url.replace("{link}",link)
   try {
-    const key=await getAuthorization()
-    headers.Authorization=headers.Authorization+key
     const res = await axios.get(url,{headers: headers})
     const playlistJSON = res.data.data[0];
     const info=playlistJSON.attributes;
@@ -30,7 +30,7 @@ async function run(link:string) {
       }
     }
   } catch(error) {
-    console.error("error:got playlist url wrong."); 
+      console.error("error:got playlist url wrong.");
   }
 }
 
@@ -71,8 +71,23 @@ function getImage(url:string,w:any,h:any): string{
 async function getPlayList(url:string) {
   url.includes("?l=")? url= url.split("?l=")[0] : null
   url=url.split("pl.")[1]
+  keyCheck()
   const result = await run(url); 
   return result;
+}
+
+async function keyCheck(){
+  let key;
+  if (retry && existsSync(".AppleMusicToken")){ 
+    //console.log("have key")
+     key=readFileSync(".AppleMusicToken")
+     //console.log(key)
+  }else{
+    //console.log("new key")
+    key=await getAuthorization()
+    writeFileSync(".AppleMusicToken",key)
+  }
+  headers.Authorization=headers.Authorization+key
 }
 
 export {getPlayList}
