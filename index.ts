@@ -1,18 +1,18 @@
 import axios from "axios";
-let url = 'https://amp-api.music.apple.com/v1/catalog/us/playlists/pl.u-{link}';
+let url = 'https://amp-api.music.apple.com/v1/catalog/us/playlists/pl.{link}';
 
 const headers = {
     'Authorization': "Bearer ",
     "Origin": "https://embed.music.apple.com"
 };
 
-const key="eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjkxMDAyMzM2LCJleHAiOjE2OTcyMjMxMzYsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.M6q_lHkvEKFi8rvnC2DtbuJ1RLTwKRYoOhsX2Vieqw184H0wKh0Tr4SWHa6WBpsxpnA5fnesVj88nJtzZ5WP8Q"
 
-
-async function run(link:string, authorization:string) {
+async function run(link:string) {
   url=url.replace("{link}",link)
   try {
-    const res = await axios.get(url,{headers: headers+authorization})
+    const key=await getAuthorization()
+    headers.Authorization=headers.Authorization+key
+    const res = await axios.get(url,{headers: headers})
     const playlistJSON = res.data.data[0];
     const info=playlistJSON.attributes;
     return {
@@ -31,6 +31,18 @@ async function run(link:string, authorization:string) {
     }
   } catch(error) {
     console.error("error:got playlist url wrong."); 
+  }
+}
+
+async function getAuthorization(){
+  let url="https://embed.music.apple.com/build/p-92eadb85.entry.js"
+  const res = await axios.get(url)
+  const regex = /Je="eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ\..*?"/
+  const match = res.data.match(regex);
+  if (match) {
+      return match[0].split('"')[1]
+  }else{
+    console.error("error:Authorization not found."); 
   }
 }
 
@@ -56,10 +68,10 @@ function getImage(url:string,w:any,h:any): string{
 }
 
 
-async function getPlayList(url:string,authorization=key) {
-  url=url.split("pl.u-")[1];
+async function getPlayList(url:string) {
   url.includes("?l=")? url= url.split("?l=")[0] : null
-  const result = await run(url,authorization); 
+  url=url.split("pl.")[1]
+  const result = await run(url); 
   return result;
 }
 
