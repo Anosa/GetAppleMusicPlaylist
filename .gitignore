@@ -129,6 +129,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 tsconfig.json
-
-.*
 package-lock.json
+.AppleMusicToken
+
