@@ -131,3 +131,4 @@ dist
 tsconfig.json
 
 .*
+package-lock.json

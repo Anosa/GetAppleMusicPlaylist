@@ -1,7 +1,6 @@
 import axios from "axios";
 import {writeFileSync,readFileSync,existsSync} from 'fs';
 let url = 'https://amp-api.music.apple.com/v1/catalog/us/playlists/pl.{link}';
-let retry=true;
 
 const headers = {
     'Authorization': "Bearer ",
@@ -20,10 +19,10 @@ async function run(link:string) {
       name: info.name as string,
       lastEditDate: info.lastModifiedDate as string,
       description: info.description.standard as string,
-      playlistAvatar: function(w=3000,h=3000){
-        return getImage(info.artwork.url,w,h);
+      playlistAvatar: function(w=3000){
+        return getImage(info.artwork.url,w);
       },
-      playlist: function (){
+      allSongs: function (){
         return playlistJSON.relationships.tracks.data.map((each:any)=>{
           return getSong(each)
         })
@@ -57,14 +56,14 @@ function getSong(song:any){
     releaseDate:song.releaseDate as string,
     url:song.url as string,
     artistName:song.artistName as string,
-    artwork: function(url:string,w=3000,h=3000){
-      return getImage(song.artwork.url,w,h)
+    artwork: function(w=3000){
+      return getImage(song.artwork.url,w)
     }
   }
 }
 
-function getImage(url:string,w:any,h:any): string{
-  return url.replace("{w}", w).replace("{h}", h);
+function getImage(url:string,w:any): string{
+  return url.replace("{w}", w).replace("{h}", w);
 }
 
 
@@ -78,7 +77,7 @@ async function getPlayList(url:string) {
 
 async function keyCheck(){
   let key;
-  if (retry && existsSync(".AppleMusicToken")){ 
+  if (existsSync(".AppleMusicToken")){ 
     //console.log("have key")
      key=readFileSync(".AppleMusicToken")
      //console.log(key)
