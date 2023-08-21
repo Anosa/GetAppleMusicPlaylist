@@ -1,5 +1,11 @@
 # 获得Apple Music 歌单数据
 
+安装:
+```
+npm i get-apple-music-playlist
+```
+
+使用:
 ```
 import {getPlayList} from "get-apple-music-playlist"
 
@@ -10,7 +16,7 @@ export default async function Page(){
     //other code
 }
 ```
-playlist：
+playlist:
 ```
 curatorName: (string)，播放列表作者
 name: (string)，播放列表名称
